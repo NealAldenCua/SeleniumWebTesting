@@ -1,5 +1,7 @@
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -11,10 +13,7 @@ public class BrowserLoginPage {
 
     // Locators
     By mainContent = By.id("root");
-    By homePage = By.id("page_wrapper");
-
     By productTextSection = By.className("login_logo");
-    By homePageTextSection = By.className("page_wrapper");
 
     By authSection = By.id("login_credentials");
     By usernameField = By.xpath("//*[@id=\"user-name\"]");
@@ -38,16 +37,20 @@ public class BrowserLoginPage {
 
     public void fillSignupForm(String email, String password) {
         wait.until(ExpectedConditions.presenceOfElementLocated(authSection));
-        driver.findElement(usernameField).sendKeys(email);
-        driver.findElement(passwordField).sendKeys(password);
-        driver.findElement(loginButton).click();
-    }
+        WebElement usernameElement = driver.findElement(usernameField);
+        WebElement passwordElement = driver.findElement(passwordField);
+        WebElement loginElement = driver.findElement(loginButton);
 
-    public void waitForHomePage(){
-        wait.until(ExpectedConditions.presenceOfElementLocated(homePage));
-    }
+        //delay for inputs
+        Actions actions = new Actions(driver);
 
-    public boolean isHomePageTextPresent(String expectedText){
-        return wait.until(ExpectedConditions.textToBePresentInElementLocated(homePageTextSection, expectedText));
+        //username
+        actions.sendKeys(usernameElement, email).pause(Duration.ofMillis(700)).perform();
+
+        //password
+        actions.sendKeys(passwordElement, password).pause(Duration.ofMillis(700)).perform();
+
+        //click login
+        actions.click(loginElement).perform();
     }
 }
